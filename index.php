@@ -1,14 +1,35 @@
 <?php
 session_start();
 require_once 'database.php';
+require 'session_auth.php'; // Include session settings and CSRF token setup
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
     if (authenticateUser($username, $password)) {
-        $_SESSION['username'] = $username;
-        header("Location: profile.php");
+        $mysqli = connectDB();
+        $stmt = $mysqli->prepare("SELECT superuser, disabled FROM users WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $stmt->bind_result($superuser, $disabled);
+        $stmt->fetch();
+        $stmt->close();
+        closeDB($mysqli);
+
+        // Debugging output
+        echo "Username: $username<br>";
+        echo "Disabled: $disabled<br>";
+
+        if ($disabled) {
+            $error = "Your account is disabled.";
+        } else {
+            $_SESSION['username'] = $username;
+            $_SESSION['superuser'] = $superuser;
+            header("Location: profile.php");
+            exit;
+        }
     } else {
         $error = "Invalid username or password";
     }

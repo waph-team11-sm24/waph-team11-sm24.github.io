@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once 'database.php';
+require_once 'session_auth.php'; // Include session settings and CSRF token setup
+require_once 'database.php'; // Include database connection and functions
 
 // Check if the user is logged in, if not then redirect to login page
 if (!isset($_SESSION['username'])) {
@@ -8,6 +9,7 @@ if (!isset($_SESSION['username'])) {
     exit;
 }
 
+// Retrieve posts to display
 $posts = getAllPosts();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -15,7 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $postID = intval($_POST['postID']);
         $comment = trim($_POST['comment']);
         $username = $_SESSION['username'];
-        
+
+        // Check CSRF token
+        if (!isset($_POST['nocsrftoken']) || $_POST['nocsrftoken'] !== $_SESSION['nocsrftoken']) {
+            die("CSRF validation failed.");
+        }
+
+        // Validate comment content
         if (!empty($comment)) {
             addComment($postID, $comment, $username);
         }
@@ -24,7 +32,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($_POST['delete_post'])) {
         $postID = intval($_POST['postID']);
         $username = $_SESSION['username'];
-        
+
+        // Check CSRF token
+        if (!isset($_POST['nocsrftoken']) || $_POST['nocsrftoken'] !== $_SESSION['nocsrftoken']) {
+            die("CSRF validation failed.");
+        }
+
         deletePost($postID, $username);
         header("Location: viewposts.php");
         exit;
@@ -60,12 +73,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class='post' style="border: 1px solid #ddd; padding: 10px; margin-bottom: 20px;">
                 <h2><?php echo htmlentities($post['title']); ?></h2>
                 <p><?php echo htmlentities($post['content']); ?></p>
-                <p><small>Posted by <?php echo htmlentities($post['username']); ?> on <?php echo $post['date']; ?></small></p>
+                <p><small>Posted by <?php echo htmlentities($post['username']); ?> on <?php echo htmlentities($post['date']); ?></small></p>
 
                 <!-- Comment Form -->
                 <div class="comment-form">
                     <form action="viewposts.php" method="POST">
-                        <input type="hidden" name="postID" value="<?php echo $post['postID']; ?>">
+                        <input type="hidden" name="nocsrftoken" value="<?php echo htmlspecialchars($_SESSION['nocsrftoken']); ?>">
+                        <input type="hidden" name="postID" value="<?php echo htmlspecialchars($post['postID']); ?>">
                         <div class="comment-input-container">
                             <textarea name="comment" rows="4" placeholder="Add a comment..."></textarea>
                             <input type="submit" value="Post" class="post-button">
@@ -84,15 +98,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ?>
                         <div class="comment">
                             <p><strong><?php echo htmlentities($comment['username']); ?>:</strong> <?php echo htmlentities($comment['content']); ?></p>
-                            <p><small>Posted on <?php echo $comment['date']; ?></small></p>
+                            <p><small>Posted on <?php echo htmlentities($comment['date']); ?></small></p>
                         </div>
                     <?php endforeach; ?>
                 </div>
 
-                <!-- Delete Post Button -->
+                <!-- Edit and Delete Post Buttons -->
                 <?php if ($post['username'] === $_SESSION['username']): ?>
-                    <form action="viewposts.php" method="POST" style="margin-top: 10px;">
-                        <input type="hidden" name="postID" value="<?php echo $post['postID']; ?>">
+                    <form action="edit_post.php" method="GET" style="display: inline;">
+                        <input type="hidden" name="postID" value="<?php echo htmlspecialchars($post['postID']); ?>">
+                        <input type="submit" value="Edit Post" class="edit-button">
+                    </form>
+
+                    <form action="viewposts.php" method="POST" style="margin-top: 10px; display: inline;">
+                        <input type="hidden" name="nocsrftoken" value="<?php echo htmlspecialchars($_SESSION['nocsrftoken']); ?>">
+                        <input type="hidden" name="postID" value="<?php echo htmlspecialchars($post['postID']); ?>">
                         <input type="submit" name="delete_post" value="Delete Post" class="delete-button">
                     </form>
                 <?php endif; ?>

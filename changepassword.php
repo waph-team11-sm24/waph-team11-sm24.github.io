@@ -11,11 +11,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_SESSION['username'];
     $old_password = $_POST['old_password'];
     $new_password = $_POST['new_password'];
+    $confirm_password = $_POST['confirm_password']; // New field for confirmation
 
-    if (changeUserPassword($username, $old_password, $new_password)) {
-        $success = "Password changed successfully!";
+    if ($new_password !== $confirm_password) {
+        $error = "New passwords do not match.";
     } else {
-        $error = "Password change failed.";
+        if (changeUserPassword($username, $old_password, $new_password)) {
+            $success = "Password changed successfully!";
+        } else {
+            $error = "Password change failed.";
+        }
     }
 }
 ?>
@@ -35,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <form method="post" action="changepassword.php">
             <input type="password" name="old_password" placeholder="Old Password" required>
             <input type="password" name="new_password" placeholder="New Password" required>
+            <input type="password" name="confirm_password" placeholder="Confirm New Password" required> <!-- New field for confirmation -->
             <button type="submit" class="button">Change Password</button>
         </form>
     </div>

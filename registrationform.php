@@ -1,5 +1,7 @@
 <?php
 require_once 'database.php';
+require 'session_auth.php'; 
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];

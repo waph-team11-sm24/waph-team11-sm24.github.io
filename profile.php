@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once 'database.php';
+require 'session_auth.php'; // Include session settings and CSRF token setup
+
 
 // Check if the user is logged in, if not then redirect to login page
 if (!isset($_SESSION['username'])) {
@@ -10,6 +12,14 @@ if (!isset($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 $userProfile = getUserProfile($username);
+
+// Check if the user is disabled
+if ($userProfile['disabled']) {
+    die('Your account has been disabled.');
+}
+
+// Check if the user is a superuser
+$is_superuser = $userProfile['superuser'] == 1;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
@@ -47,6 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <a href="viewposts.php">View All Posts</a>
         <a href="add_post.php">Make a Post</a>
         <a href="logout.php">Logout</a>
+
+        <?php if ($is_superuser): ?>
+            <a href="admin_users.php" class="admin-button">Admin Settings</a>
+        <?php endif; ?>
     </div>
 </body>
 </html>

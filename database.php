@@ -1,4 +1,5 @@
 <?php
+
 function connectDB() {
     $servername = "localhost";
     $username = "vibudhvh";
@@ -18,12 +19,12 @@ function closeDB($mysqli) {
     $mysqli->close();
 }
 
-function registerUser($username, $password, $name, $email, $phone) {
+function registerUser($username, $password, $name, $email, $phone, $is_superuser = 0) {
     $mysqli = connectDB();
     $hashedPassword = md5($password);
 
-    $stmt = $mysqli->prepare("INSERT INTO users (username, password, name, email, phone) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssss", $username, $hashedPassword, $name, $email, $phone);
+    $stmt = $mysqli->prepare("INSERT INTO users (username, password, name, email, phone, superuser) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssssi", $username, $hashedPassword, $name, $email, $phone, $is_superuser);
     $result = $stmt->execute();
     $stmt->close();
     closeDB($mysqli);
@@ -35,7 +36,7 @@ function authenticateUser($username, $password) {
     $mysqli = connectDB();
     $hashedPassword = md5($password);
 
-    $stmt = $mysqli->prepare("SELECT username FROM users WHERE username = ? AND password = ?");
+    $stmt = $mysqli->prepare("SELECT username FROM users WHERE username = ? AND password = ? AND disabled = 0");
     $stmt->bind_param("ss", $username, $hashedPassword);
     $stmt->execute();
     $stmt->store_result();
@@ -48,15 +49,15 @@ function authenticateUser($username, $password) {
 
 function getUserProfile($username) {
     $mysqli = connectDB();
-    $stmt = $mysqli->prepare("SELECT name, email, phone FROM users WHERE username = ?");
+    $stmt = $mysqli->prepare("SELECT name, email, phone, disabled, superuser FROM users WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
-    $stmt->bind_result($name, $email, $phone);
+    $stmt->bind_result($name, $email, $phone, $disabled, $superuser);
     $stmt->fetch();
     $stmt->close();
     closeDB($mysqli);
 
-    return array('name' => $name, 'email' => $email, 'phone' => $phone);
+    return array('name' => $name, 'email' => $email, 'phone' => $phone, 'disabled' => $disabled, 'superuser' => $superuser);
 }
 
 function updateUserProfile($username, $name, $email, $phone) {
@@ -75,7 +76,7 @@ function changeUserPassword($username, $oldPassword, $newPassword) {
     $hashedOldPassword = md5($oldPassword);
     $hashedNewPassword = md5($newPassword);
 
-    $stmt = $mysqli->prepare("SELECT username FROM users WHERE username = ? AND password = ?");
+    $stmt = $mysqli->prepare("SELECT username FROM users WHERE username = ? AND password = ? AND disabled = 0");
     $stmt->bind_param("ss", $username, $hashedOldPassword);
     $stmt->execute();
     $stmt->store_result();
@@ -145,6 +146,7 @@ function updatePost($postID, $title, $content) {
 
     return $result;
 }
+
 function deletePost($postID, $username) {
     $mysqli = connectDB();
 
@@ -226,5 +228,7 @@ function getUserByEmail($email) {
 
     return $user;
 }
+
+
 
 ?>

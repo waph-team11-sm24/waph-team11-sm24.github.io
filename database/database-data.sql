@@ -37,3 +37,5 @@ CREATE TABLE superusers (
   username VARCHAR(50) PRIMARY KEY,
   password VARCHAR(255) NOT NULL
 );
+
+alter table users add superuser boolean default false;

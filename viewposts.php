@@ -10,16 +10,25 @@ if (!isset($_SESSION['username'])) {
 
 $posts = getAllPosts();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])) {
-    $postID = intval($_POST['postID']);
-    $comment = trim($_POST['comment']);
-    $username = $_SESSION['username'];
-    
-    if (!empty($comment)) {
-        addComment($postID, $comment, $username);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['comment'])) {
+        $postID = intval($_POST['postID']);
+        $comment = trim($_POST['comment']);
+        $username = $_SESSION['username'];
+        
+        if (!empty($comment)) {
+            addComment($postID, $comment, $username);
+        }
+        header("Location: viewposts.php");
+        exit;
+    } elseif (isset($_POST['delete_post'])) {
+        $postID = intval($_POST['postID']);
+        $username = $_SESSION['username'];
+        
+        deletePost($postID, $username);
+        header("Location: viewposts.php");
+        exit;
     }
-    header("Location: viewposts.php");
-    exit;
 }
 ?>
 
@@ -48,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])) {
         <h1>Posts</h1>
         <a href="add_post.php">Make a Post</a>
         <?php foreach ($posts as $post): ?>
-            <div class='post'>
+            <div class='post' style="border: 1px solid #ddd; padding: 10px; margin-bottom: 20px;">
                 <h2><?php echo htmlentities($post['title']); ?></h2>
                 <p><?php echo htmlentities($post['content']); ?></p>
                 <p><small>Posted by <?php echo htmlentities($post['username']); ?> on <?php echo $post['date']; ?></small></p>
@@ -74,11 +83,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])) {
                     foreach ($comments as $comment):
                     ?>
                         <div class="comment">
-                            <p><strong><?php echo htmlentities($comment['username']); ?>:</strong> <?php echo htmlentities($comment['comment']); ?></p>
+                            <p><strong><?php echo htmlentities($comment['username']); ?>:</strong> <?php echo htmlentities($comment['content']); ?></p>
                             <p><small>Posted on <?php echo $comment['date']; ?></small></p>
                         </div>
                     <?php endforeach; ?>
                 </div>
+
+                <!-- Delete Post Button -->
+                <?php if ($post['username'] === $_SESSION['username']): ?>
+                    <form action="viewposts.php" method="POST" style="margin-top: 10px;">
+                        <input type="hidden" name="postID" value="<?php echo $post['postID']; ?>">
+                        <input type="submit" name="delete_post" value="Delete Post" class="delete-button">
+                    </form>
+                <?php endif; ?>
             </div>
         <?php endforeach; ?>
     </div>

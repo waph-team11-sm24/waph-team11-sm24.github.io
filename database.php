@@ -145,16 +145,36 @@ function updatePost($postID, $title, $content) {
 
     return $result;
 }
-
-function deletePost($postID) {
+function deletePost($postID, $username) {
     $mysqli = connectDB();
-    $stmt = $mysqli->prepare("DELETE FROM posts WHERE postID = ?");
-    $stmt->bind_param("i", $postID);
-    $result = $stmt->execute();
-    $stmt->close();
-    closeDB($mysqli);
 
-    return $result;
+    // Check if the post belongs to the user
+    $stmt = $mysqli->prepare("SELECT username FROM posts WHERE postID = ?");
+    $stmt->bind_param("i", $postID);
+    $stmt->execute();
+    $stmt->bind_result($postOwner);
+    $stmt->fetch();
+    $stmt->close();
+
+    if ($postOwner === $username) {
+        // Delete associated comments first
+        $stmt = $mysqli->prepare("DELETE FROM comments WHERE postID = ?");
+        $stmt->bind_param("i", $postID);
+        $stmt->execute();
+        $stmt->close();
+
+        // Delete the post
+        $stmt = $mysqli->prepare("DELETE FROM posts WHERE postID = ?");
+        $stmt->bind_param("i", $postID);
+        $stmt->execute();
+        $stmt->close();
+
+        closeDB($mysqli);
+        return true;
+    }
+
+    closeDB($mysqli);
+    return false;
 }
 
 function addComment($postID, $content, $username) {
@@ -206,4 +226,5 @@ function getUserByEmail($email) {
 
     return $user;
 }
+
 ?>

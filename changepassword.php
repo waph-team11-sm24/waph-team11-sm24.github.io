@@ -1,25 +1,48 @@
 <?php
 session_start();
-require_once 'database.php';
+require_once 'database.php'; // Include database connection and functions
 
+// Check if the user is logged in, if not then redirect to login page
 if (!isset($_SESSION['username'])) {
     header("Location: index.php");
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_SESSION['username'];
-    $old_password = $_POST['old_password'];
+    $current_password = $_POST['current_password'];
     $new_password = $_POST['new_password'];
-    $confirm_password = $_POST['confirm_password']; // New field for confirmation
+    $new_password_confirm = $_POST['new_password_confirm'];
+    $username = $_SESSION['username'];
 
-    if ($new_password !== $confirm_password) {
-        $error = "New passwords do not match.";
-    } else {
-        if (changeUserPassword($username, $old_password, $new_password)) {
-            $success = "Password changed successfully!";
+    $errors = [];
+
+    // Validate new password (at least one capital letter, one number, one special character, and minimum 8 characters)
+    if (!preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $new_password)) {
+        $errors[] = "New password does not meet requirements";
+    }
+
+    // Confirm new password match
+    if ($new_password !== $new_password_confirm) {
+        $errors[] = "New passwords do not match";
+    }
+
+    if (empty($errors)) {
+        // Fetch the current hashed password from the database
+        $current_hashed_password = getPasswordByUsername($username);
+
+        // Verify current password
+        if (md5($current_password) === $current_hashed_password) {
+            // Hash the new password
+            $hashed_new_password = md5($new_password);
+
+            // Update the password in the database
+            changePassword($username, $hashed_new_password);
+
+            // Redirect to profile page
+            header("Location: profile.php");
+            exit;
         } else {
-            $error = "Password change failed.";
+            $errors[] = "Current password is incorrect";
         }
     }
 }
@@ -35,12 +58,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
     <div class="container">
         <h1>Change Password</h1>
-        <?php if (isset($success)) echo "<p class='success'>$success</p>"; ?>
-        <?php if (isset($error)) echo "<p class='error'>$error</p>"; ?>
+        <?php if (!empty($errors)): ?>
+            <div class="errors">
+                <?php foreach ($errors as $error): ?>
+                    <p><?php echo htmlentities($error); ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
         <form method="post" action="changepassword.php">
-            <input type="password" name="old_password" placeholder="Old Password" required>
+            <input type="password" name="current_password" placeholder="Current Password" required>
             <input type="password" name="new_password" placeholder="New Password" required>
-            <input type="password" name="confirm_password" placeholder="Confirm New Password" required> <!-- New field for confirmation -->
+            <input type="password" name="new_password_confirm" placeholder="Confirm New Password" required>
             <button type="submit" class="button">Change Password</button>
         </form>
     </div>

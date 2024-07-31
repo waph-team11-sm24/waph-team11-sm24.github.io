@@ -1,79 +1,75 @@
 <?php
 session_start();
-require_once 'database.php';
+require_once 'session_auth.php'; // Include session settings and CSRF token setup
+require_once 'database.php'; // Include database connection and functions
 
 // Check if the user is logged in and is a superuser
-if (!isset($_SESSION['username']) || $_SESSION['superuser'] != 1) {
+if (!isset($_SESSION['username']) || !$_SESSION['superuser']) {
     header("Location: index.php");
     exit;
 }
 
-$mysqli = connectDB();
+// Retrieve users from the database
+$users = getAllUsers();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['action']) && isset($_POST['username'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['update_user'])) {
         $username = $_POST['username'];
-        $action = $_POST['action'];
-        
-        if ($action == 'enable') {
-            $stmt = $mysqli->prepare("UPDATE users SET disabled = 0 WHERE username = ?");
-        } elseif ($action == 'disable') {
-            $stmt = $mysqli->prepare("UPDATE users SET disabled = 1 WHERE username = ?");
+        $disabled = isset($_POST['disabled']) ? 1 : 0;
+
+        // Check CSRF token
+        if (!isset($_POST['nocsrftoken']) || $_POST['nocsrftoken'] !== $_SESSION['nocsrftoken']) {
+            die("CSRF validation failed.");
         }
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $stmt->close();
+
+        // Update user status
+        updateUserStatus($username, $disabled);
+        header("Location: admin_users.php");
+        exit;
     }
 }
-
-$stmt = $mysqli->prepare("SELECT username, name, email, phone, disabled FROM users");
-$stmt->execute();
-$result = $stmt->get_result();
-$users = $result->fetch_all(MYSQLI_ASSOC);
-$stmt->close();
-closeDB($mysqli);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Users</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Admin - Manage Users</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Admin Users</h1>
-        <table>
+    <div class="container mt-5">
+        <h1 class="mb-4">Manage Users</h1>
+        <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>Username</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($users as $user): ?>
-                <tr>
-                    <td><?php echo htmlentities($user['username']); ?></td>
-                    <td><?php echo htmlentities($user['name']); ?></td>
-                    <td><?php echo htmlentities($user['email']); ?></td>
-                    <td><?php echo htmlentities($user['phone']); ?></td>
-                    <td><?php echo $user['disabled'] ? 'Disabled' : 'Enabled'; ?></td>
-                    <td>
-                        <form method="post" action="admin_users.php" style="display:inline;">
-                            <input type="hidden" name="username" value="<?php echo htmlentities($user['username']); ?>">
-                            <?php if ($user['disabled']): ?>
-                                <button type="submit" name="action" value="enable">Enable</button>
-                            <?php else: ?>
-                                <button type="submit" name="action" value="disable">Disable</button>
-                            <?php endif; ?>
-                        </form>
-                    </td>
-                </tr>
+                    <tr>
+                        <td><?php echo htmlentities($user['username']); ?></td>
+                        <td>
+                            <?php echo $user['disabled'] ? 'Disabled' : 'Active'; ?>
+                        </td>
+                        <td>
+                            <form action="admin_users.php" method="POST" class="form-inline">
+                                <input type="hidden" name="nocsrftoken" value="<?php echo htmlspecialchars($_SESSION['nocsrftoken']); ?>">
+                                <input type="hidden" name="username" value="<?php echo htmlspecialchars($user['username']); ?>">
+                                <div class="form-check">
+                                    <input type="checkbox" name="disabled" class="form-check-input" <?php echo $user['disabled'] ? 'checked' : ''; ?>>
+                                    <label class="form-check-label">Disable</label>
+                                </div>
+                                <input type="submit" name="update_user" value="Update" class="btn btn-primary ml-2">
+                            </form>
+                        </td>
+                    </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>

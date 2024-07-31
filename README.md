@@ -1,160 +1,127 @@
-## WAPH-Web Application Programming and Hacking
+# WAPH - Web Application Programming and Hacking
 
-### Instructor: Dr. Phu Phung
+## Instructor
+**Dr. Phu Phung**
 
-# Team Project
-## Project Topic/Title : Mini Facebook
+## Student
+- **Name:** Vaishakh Vibudhendran Nair
+- **Email:** vibudhvh@ucmail.uc.edu
+- **Short Bio:** Vaishakh has keen interests in web and app development.
 
-# Team members
+![Vaishakh's headshot](headshot.jpeg)
 
-1. Vaishakh Vibudhendran Nair, vibudhvh@mail.uc.edu
-
-# Project Management Information
-
-Source code repository (private access): <[https://github.com/waph-team11-sm24/waph-teamproject](https://github.com/waph-team11-sm24/waph-teamproject)>
-
-Project homepage (public): <[https://github.com/waph-team11-sm24/waph-team11-sm24.github.io](https://github.com/waph-team11-sm24/waph-team11-sm24.github.io)>
-
-## Revision History
-
-| Date       |   Version     |  Description |
-|------------|:-------------:|-------------:|
-| 03/07/2024 |  0.0          | Init draft   |
+## Repository Link
+[GitHub Repository](https://github.com/waph-team11-sm24/waph-team11-sm24.github.io)
 
 
-# Overview
+## Team Link
+[GitHub Repository](https://github.com/waph-team11-sm24/waph-team11-sm24.github.io)
 
-The project involves creating a "miniFacebook" web application using full-stack web development technologies with a focus on security and agile practices. The app includes user registration, login, profile management, post creation, and commenting. Superusers have additional capabilities to manage user accounts. Advanced features include real-time chat. 
-
-System Analysis
-
-_(Start from Sprint 0, keep updating)_
-
-## High-level Requirements
-
-List high-level requirements of the project that your team will develop into use cases in later steps
-
-# System Design
-
-_(Start from Sprint 1, keep updating)_
-
-## Use-Case Realization
-
-## Database 
-
-## User Interface
-
-# Implementation
-
-_(Start from Sprint 1, keep updating. However, it is important to prepare the technology from Sprint 0)_
-
-For each new sprint cycle, update the implementation of your system (break it down into subsections). Please include some code snippets to illustrate the implementation.
-
-Specify your team's development approach, including programming languages, databases, development, testing, and deployment environments. 
-
-# Security analysis
-
-_Include a brief explanation of your implementation and the security aspects based on the following questions:_
-
-*  How did you apply the security programming principles in your project?
-*  What database security principles have you used in your project?
-*  Is your code robust and defensive? How?
-*  How did you defend your code against known attacks such as XSS, SQL Injection, CSRF, Session Hijacking
-*   How do you separate the roles of super users and regular users?
-
-# Demo (screenshots)
-
-_You need to capture screenshots to demonstrate how your web application works. The screenshots must be accompanied by a short description of its functionalities following the implementation as below:_
-
-*   Everyone can register a new account and then login
-*   Superuser can disable an account
-    *   The disabled account cannot log in 
-    *   Superuser can enable the disabled account
-    *   The enabled user can log in	
-*   A regular logged-in user can delete her own existing posts but cannot delete the posts of others
-*   CSRF attack to delete a post should be detected and prevented
-*   A regular logged-in user cannot access the link for superusers
-*   A logged-in user can have a real-time chat with other logged-in users
-
-# Software Process Management
-
-_(Start from Sprint 0, keep updating)_
-
-Introduce how your team uses a software management process, e.g., Scrum, and how your teamwork collaborates.
-
-## Scrum process
-
-### Sprint 0
-
-Duration: DD/MM/YYYY-DD/MM/YYYY
-
-#### Completed Tasks: 
-
-1. Task 1
-2. Task 2
-3. ...
-
-#### Contributions: 
-
-1. Member 1, x commits, y hours, contributed in xxx
-2. Member 2, x commits, y hours, contributed in xxx
-3. Member 3, x commits, y hours, contributed in xxx
-4. Member 4, x commits, y hours, contributed in xxx
-
-### Sprint 1
-
-Duration: MM/DD/YYYY-MM/DD/YYYY
-
-#### Completed Tasks: 
-
-1. Task 1
-2. Task 2
-3. ...
-
-#### Contributions: 
-
-1. Member 1, x commits, y hours, contributed in xxx
-2. Member 2, x commits, y hours, contributed in xxx
-3. Member 3, x commits, y hours, contributed in xxx
-4. Member 4, x commits, y hours, contributed in xxx
-
-#### Sprint Retrospection:
-
-_(Introduction to Sprint Retrospection:
-
-_Working through the sprints is a continuous improvement process. Discussing the completed sprint can improve the next sprint walk through a much more efficient one. Sprint retrospection is done once a sprint is finished and the team is ready to start another sprint planning meeting. This discussion can take up to 1 hour depending on the ideal team size of 4 members. 
-Discussing good things that happened during the sprint can improve the team's morale, good team collaboration, appreciating someone who did a fantastic job solving a blocker issue, work well-organized, and helping someone in need. This will improve the team's confidence and keep them motivated.
-As a team, we can discuss what has gone wrong during the sprint and come up with improvement points for the next sprints. Few points can be like, need to manage time well, need to prioritize the tasks properly and finish a task in time, incorrect design lead to multiple reviews and that wasted time during the sprint, team meetings were too long which consumed most of the effective work hours. We can mention every problem is in the sprint which is hindering the progress.
-Finally, this meeting should improve your next sprint drastically and understand the team dynamics well. Mention the bullet points and discuss how to solve it.)_
-
-| Good     |   Could have been better    |  How to improve?  |
-|----------|:---------------------------:|------------------:|
-|          |                             |                   |
+## Overview
+We created a mini-Facebook-like application that supports login, registration, password change, email update, posting etc. Numerous safety features were also implemented.
 
 
-### Sprint x
+## Video Demonstration
+[![Video Demonstration](https://www.youtube.com/watch?v=trfD3QQGV-I)](https://www.youtube.com/watch?v=trfD3QQGV-I)
 
-Duration: MM/DD/YYYY-MM/DD/YYYY
 
-#### Completed Tasks: 
+## Deployment on https
+The deployment on https can be clearly seen in this screenshot from when i accessed the website from my windows laptop outside the vm and the url begins with https.
+![](1.jpeg)
+## hashed passwords and no mysql root account for php
 
-1. Task 1
-2. Task 2
-3. ...
+This screenshot shows that the database has passwords hashed
+![](2.jpeg)
 
-#### Contributions: 
+This snippet from database.sql shows how i am using md5 to hash all the passwords when the user registers.
+![](3.jpeg)
 
-1. Member 1, x commits, y hours, contributed in xxx
-2. Member 2, x commits, y hours, contributed in xxx
-3. Member 3, x commits, y hours, contributed in xxx
-4. Member 4, x commits, y hours, contributed in xxx
+In this snipped you can see that no mysql root account is being used by my php code. it is clearly using my vibudhvh account
+![](4.jpeg)
 
-#### Sprint Retrospection: 
+## prepared sql statements
 
-| Good     |   Could have been better    |  How to improve?  |
-|----------|:---------------------------:|------------------:|
-|          |                             |                   |
+These are just a few examples of me preparing sql statements to make them less susceptible to scripting attacks, sql injections etc.
 
-# Appendix
+![](5.jpeg)
 
-Include the content (in text, not as images) of the SQL files and all source code of your PHP files (with the file name). # waph-team11-sm24.github.io
+![](6.jpeg)
+
+## validated every layer
+
+
+
+### html
+HTML validation ensures that user inputs meet specific criteria before form submission using attributes like required and pattern. 
+![](7.jpeg)
+
+
+
+
+### php
+PHP validation provides server-side security by validating and sanitizing inputs to prevent harmful data processing
+![](9.jpeg)
+![](8.jpeg)
+
+### sql
+![](6.jpeg)
+This layer we are doing validation using prepare.
+
+### HTML outputs must be sanitized
+
+In index I do <?php if (isset($error)) echo "<p class='error'>" . htmlentities($error) . "</p>"; ?>
+and in profile.php I do <p>Name: <?php echo htmlentities($user['name']); ?></p>
+<p>Email: <?php echo htmlentities($user['email']); ?></p>
+<p>Phone: <?php echo htmlentities($user['phone']); ?></p>
+
+This is typically done using functions that escape special HTML characters so they are not interpreted as code by the browser.
+
+
+
+
+## Role-based access control for registered users and super users
+### A regular user cannot log in as a superuser
+![](2.jpeg)
+v1 is the only supersuer.
+
+![](10.jpeg)
+I logged in as v2 which is shown by the name and email as in the previous screenshot and admin setting arent visible here which are visible when i log in as v1 in the screenshot below.
+![](11.jpeg)
+
+I set the session superuser as true if its a superuser and kick them out of the admin page if they come there without the session. the button doesn't show up on the profile if they arent a superuser.
+
+### A regular user cannot edit/update posts of other users
+![](12.jpeg)
+
+As you can see in the screenshot where I am logged in as v2 i can only edit the post made by v2 and not the one made by v1.
+
+In the backend i search if the post is made by the user and only if it is, then I show the edit button, or else i don't.
+	
+### Session Authentication and Hijacking Prevention
+
+Im doing this by 
+Ensure your site is served over HTTPS to encrypt the data between the client and server.
+
+Regenerate the session ID after login to prevent session fixation attacks.
+
+Set session cookies with the Secure and HttpOnly flags.
+Implement a session timeout to log out inactive users.
+
+
+I also make the pages require session_auth and database.php which does authentication as well.
+
+### CSRF Protection
+
+Session_auth does this for us and I use it on all pages to make sure there is no hijacking happening.
+
+
+
+### Integrating an open-source front-end CSS template
+![](6.jpeg)
+I do this in admin_users as shown in this screenshot. I just pull it from the internet in style.
+
+
+### Source code
+
+
+

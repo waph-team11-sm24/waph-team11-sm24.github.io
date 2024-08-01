@@ -28,6 +28,34 @@ We created a mini-Facebook-like application that supports login, registration, p
 
 [Video Demonstration](https://www.youtube.com/watch?v=trfD3QQGV-I)
 
+
+# Team members
+
+1. Vaishakh V Nair, vibudhvh@mail.uc.edu
+
+# System Analysis
+## High-level requirements
+
+The project will require a  secure user authentication, registration and login functionalities. It will evenetually also require role-based access control, ensuring regular users and superusers have appropriate access and functionalities. Users need to be able to manage their own posts, and superusers should have overarching control. Commenting on posts is a key feature, which will allow  interaction between users. The system must be secure, incorporating HTTPS, input validation, and defenses against SQL injection, XSS, CSRF, and also session hijacking. Additionally, the UI must also be intuitive.
+
+# system design
+
+## use case realization
+
+The system handles various user many interactions like registration, login, and role-based access. Users can create and manage their posts, and comment on posts while superusers have broader control over posts and user management. Security measures are done thorough input validation, output sanitization, and protection against vulnerabilities of webpages like sql attacks, XSS and JS Scripting attacks.
+
+## Database 
+
+The database consists many a tables. the Users Table is used for storing user credentials, roles, and status; the Posts Table for managing post content and the Comments Table for handling comments associated with posts, including details about the commenter and what the content is.
+
+## User Interface
+
+User Interface: The user interface includes many a forms for login and registration, a management interfaces for posts, and sections for commenting. Role-based features are implemented to provide different UI elements based on user roles like admin settings to disable and enable a user again.
+
+
+# Implementation
+
+### Project requirements
 ## Deployment on https
 
 The deployment on https can be clearly seen in this screenshot from when i accessed the website from my windows laptop outside the vm and the url begins with https.
@@ -128,6 +156,80 @@ die("CSRF validation failed.");
 
 ![](6.jpeg)
 I do this in admin_users as shown in this screenshot. I just pull it from the internet in style.
+
+
+### Sprint 0
+
+Duration: 30/07/2024-31/07/2024
+
+#### Completed Tasks: 
+
+1. Team Setup
+2. Project Planning
+3. Repository Setup
+
+#### Contributions: 
+
+1. Vaishakh, 2 commits, 2 hours, contributed in all of the tasks done in the spring
+
+#### Sprint Retrospection:
+
+I had trouble ensuring that the GitHub repository is correctly set up a little but but the rest all went fine.
+
+### Sprint 1
+
+Duration: 30/07/2024-31/07/2024
+
+#### Completed Tasks: 
+
+1. Database Design
+2. User Registration and Login
+3. Profile Management
+4. View posts
+
+#### Contributions: 
+
+1. Vaishakh, 1 commits, 5 hours, contributed in all of the tasks done in the sprint
+
+#### Sprint Retrospection:
+
+I had trouble getting the input validatation working for password changing for some reason.  Designing a robust database schema that meets all requirements was very challenging. I overcame this by Using online resources, tutorials.
+
+### Sprint 2
+
+Duration: 31/07/2024-31/07/2024
+
+#### Completed Tasks: 
+
+1. Post Management
+2. Comment Management
+4. Post Access Control
+
+#### Contributions: 
+
+1. Vaishakh, 2 commits, 5 hours, contributed in all of the tasks done in the sprint
+
+#### Sprint Retrospection:
+
+I found implementing features for adding, editing, and deleting posts to be challenging, especially ensuring that users can only manage their own posts. I overcame this by going to forums to overcome technical difficulties and enhance your skills.
+
+### Sprint 3
+
+Duration: 31/07/2024-31/07/2024
+
+#### Completed Tasks: 
+
+1. Superuser Functions
+2. Real-Time Chat
+4. Superuser Access
+
+#### Contributions: 
+
+1. Vaishakh, 2 commits, 5 hours, contributed in all of the tasks done in the sprint
+
+#### Sprint Retrospection:
+
+Implementing features for superusers to disable and enable accounts was complex, particularly in ensuring that disabled users are correctly handled and that their sessions are managed properly.  I overcame this by going to forums to overcome technical difficulties and enhance your skills.
 
 ### Appendix
 
